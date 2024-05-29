@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info:
+  title: Chat API
+  version: 1.0.0
+  description: API for managing chat information
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+
+
+  /chats:
+    post:
+      summary: Create a new chat
+      description: Creates a new chat with the provided details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNewChat'
+      responses:
+        '201':
+          description: Chat created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCreated'
+    get:
+      summary: Get all chats
+      description: Retrieves information about all chats associated with the authenticated user.
+      responses:
+        '200':
+          description: Chats retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetChats'
+
+
+  /chats/{chat_id}:
+    get:
+      summary: Get chat information by ID
+      description: Retrieves information about a chat by its ID.
+      parameters:
+        - in: path
+          name: chat_id
+          required: true
+          description: The ID of the chat to retrieve information for.
+          schema:
+            type: string
+          example: "abc123"
+      responses:
+        '200':
+          description: Chat information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetChat'
+
+  /messages:
+    post:
+      summary: Send a message to a chat
+      description: Sends a message to the specified chat.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMessage'
+      responses:
+        '200':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReplyMessage'
+
+  /info:
+    get:
+      summary: Retrieve application information
+      description: Returns information about the chat application.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppInfo'
+
+components:
+  schemas:
+    ChatInfo:
+      type: object
+      properties:
+        chatId:
+          type: string
+          description: Unique identifier for the chat session.
+    AppInfo:
+      type: object
+      properties:
+        appName:
+          type: string
+          description: Name of the application.
+        developers:
+          type: string
+          description: Developers of the application.
+        description:
+          type: string
+          description: Description of the application.
+    CreateNewChat:
+      type: object
+      properties:
+        chat_name:
+          type: string
+          description: The name of the chat.
+    ChatCreated:
+      type: object
+      properties:
+        chat_id:
+          type: string
+          description: The ID of the created chat.
+        chat_name:
+          type: string
+          description: The name of the chat.
+        user_id:
+          type: string
+          description: The ID of the user who created the chat.
+        created_at:
+          type: string
+          format: date-time
+          description: The timestamp when the chat was created.
+        message:
+          type: string
+          description: Any additional message related to the chat creation.
+    GetChat:
+      type: object
+      properties:
+        chat_id:
+          type: string
+          description: The ID of the chat.
+        chat_name:
+          type: string
+          description: The name of the chat.
+        user_id:
+          type: string
+          description: The ID of the user associated with the chat.
+        created_at:
+          type: string
+          format: date-time
+          description: The timestamp when the chat was created.
+    GetChats:
+      type: object
+      properties:
+        chats:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetChat'
+    NewMessage:
+      type: object
+      properties:
+        chat_id:
+          type: string
+          description: The ID of the chat.
+        text:
+          type: string
+          description: The text of the message.
+    ReplyMessage:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The text of the reply message.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the message was created.
+        author:
+          type: string
+          description: The author of the message.
